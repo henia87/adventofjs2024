@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advent of JS 2024 - Challenge #2</title>
+    <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+    <h1><a href="https://store.selfteach.me/view/courses/advent-of-javascript-2024" target="_blank">Advent of JS 2024</a> - Challenge #2</h1>
+    <p>#adventofjs</p>
+
+    <div class="intro">
+        <h2>Pick your favorite holiday movie:</h2>
+        <button class="clear-button" type="button">Clear</button>
+    </div>
+
+    <div class="dropdown">
+        <div class="search">
+            <input type="text" name="movie-name" id="movie-name" placeholder="Your Favorite Holiday Movie">
+            <img class="dropdown-arrow" src="./dropdown-arrow.svg" alt="Dropdown arrow">
+        </div>
+        <div class="dropdown-content">
+            <ul id="movies-list">
+                <!-- List of movies dynamically loaded -->
+            </ul>
+        </div>
+
+    </div>
+
+    <script>
+        // Fetch data
+        const moviesPath = "./top-100-christmas-movies.json";
+        let moviesData = [];
+        
+        async function loadMovies(url) {
+            const response = await fetch(url);
+            if(!response.ok) {
+                throw new Error(`An error occurred: ${response.status}`);
+            }
+            const movies = await response.json();
+            moviesData = movies;
+            
+            const moviesList = document.getElementById("movies-list");
+                movies.forEach(movie => {
+                    const listItem = document.createElement("li");
+                    listItem.classList.add("movie");
+                    listItem.setAttribute("tabindex", "0");
+
+                    listItem.innerHTML = `
+                        <img class="movie-image" src="${movie.Image}" alt="${movie["Image Alt"]}">
+                        <span class="movie-title">${movie.Title}</span>
+                        <span class="movie-year">${movie.Year}</span>
+                    `;
+
+                    moviesList.appendChild(listItem);
+                });
+        }
+
+        loadMovies(moviesPath)
+            .catch(error => {
+                console.error(error);
+            });
+        
+        // Dropdown functionality
+        const dropdown = document.querySelector(".dropdown");
+        const search = document.querySelector(".search");
+        const searchInput = document.querySelector("#movie-name");
+        const dropdownContent = document.querySelector(".dropdown-content");
+        const moviesList = document.getElementById("movies-list");
+        const clearButton = document.querySelector(".clear-button");
+        const inputClone = searchInput.cloneNode(true);
+        const arrowClone = document.querySelector(".dropdown-arrow").cloneNode(true);
+        let currentElement = null;
+
+        searchInput.addEventListener("click", (event) => {
+            event.stopPropagation();
+
+            dropdownContent.classList.add("expand");
+            searchInput.classList.add("clicked");
+            searchInput.setAttribute("placeholder", "");
+        });
+
+        searchInput.addEventListener("click", (event) => {
+            event.stopPropagation();
+        });
+
+        document.addEventListener("click", () => {
+            dropdownContent.classList.remove("expand");
+            searchInput.classList.remove("clicked");
+            searchInput.setAttribute("placeholder", "Your Favorite Holiday Movie");
+        });
+
+        searchInput.addEventListener("focus", () => {
+            dropdownContent.classList.add("expand");
+        });
+
+        function moveToNextElement() {
+            const movieList = Array.from(document.querySelectorAll(".movie"));
+            if(!movieList.length) {
+                return;
+            }
+            const currentElementIndex = movieList.indexOf(currentElement);
+
+            if(currentElementIndex < movieList.length - 1) {
+                currentElement = movieList[currentElementIndex + 1];
+                currentElement.focus();
+            }
+            else {
+                currentElement = movieList[0];
+                currentElement.focus();
+            }
+        }
+
+        function moveToPreviousElement() {
+            const movieList = Array.from(document.querySelectorAll(".movie"));
+            if(!movieList.length) {
+                return;
+            }
+            const currentElementIndex = movieList.indexOf(currentElement);
+
+            if(currentElementIndex > 0) {
+                currentElement = movieList[currentElementIndex - 1];
+                currentElement.focus();
+            }
+            else {
+                currentElement = movieList[movieList.length - 1];
+                currentElement.focus();
+            }
+        }
+
+        dropdown.addEventListener("keydown", (event) => {
+            if(!dropdownContent.classList.contains("expand")) {
+                dropdownContent.classList.add("expand");
+            }
+            
+            if(event.key === "ArrowDown") {
+                moveToNextElement();
+            }
+            else if(event.key === "ArrowUp") {
+                moveToPreviousElement();      
+            }
+            else if(event.key === "Enter" && currentElement) {
+                const movieImage = currentElement.querySelector(".movie-image");
+                const movieTitle = currentElement.querySelector(".movie-title");
+                const movieYear = currentElement.querySelector(".movie-year");
+
+                const selectedMovie = document.createElement("span");
+                selectedMovie.innerHTML = `
+                    <img class="movie-image" src="${movieImage.src}" alt="${movieImage.alt}">
+                    <span class="movie-title">${movieTitle.textContent}</span>
+                    <span class="movie-year">${movieYear.textContent}</span>
+                `;
+                
+                search.innerHTML = "";
+                selectedMovie.classList.add("selected-movie");
+                search.appendChild(selectedMovie);
+
+                dropdownContent.classList.remove("expand");
+                searchInput.classList.remove("clicked");
+                searchInput.setAttribute("placeholder", "Your Favorite Holiday Movie");
+            }
+        });
+
+        document.addEventListener("keydown", (event) => {
+            if(event.key === "Escape") {
+                dropdownContent.classList.remove("expand");
+                searchInput.classList.remove("clicked");
+                searchInput.setAttribute("placeholder", "Your Favorite Holiday Movie");
+                document.focus();   
+            }
+        });
+
+        // Selecting a movie
+        moviesList.addEventListener("click", (event) => {
+            const movie = event.target.closest(".movie");
+
+            if(!movie) return;
+
+            const movieImage = movie.querySelector(".movie-image");
+            const movieTitle = movie.querySelector(".movie-title");
+            const movieYear = movie.querySelector(".movie-year");
+
+            const selectedMovie = document.createElement("span");
+            selectedMovie.innerHTML = `
+                <img class="movie-image" src="${movieImage.src}" alt="${movieImage.alt}">
+                <span class="movie-title">${movieTitle.textContent}</span>
+                <span class="movie-year">${movieYear.textContent}</span>
+            `;
+            
+            search.innerHTML = "";
+            selectedMovie.classList.add("selected-movie");
+            search.appendChild(selectedMovie);
+        });
+
+        // Clear selection
+        clearButton.addEventListener("click", () => {        
+            const selectedMovie = document.querySelector(".selected-movie");
+
+            if(selectedMovie) {
+                search.removeChild(selectedMovie);
+            }
+
+            dropdownContent.classList.remove("expand");
+        
+            const moviesList = document.getElementById("movies-list");
+                moviesList.innerHTML = "";  // Clear the current list
+                moviesData.forEach(movie => {
+                    const listItem = document.createElement("li");
+                    listItem.classList.add("movie");
+                    listItem.setAttribute("tabindex", "0");
+
+                    listItem.innerHTML = `
+                        <img class="movie-image" src="${movie.Image}" alt="${movie["Image Alt"]}">
+                        <span class="movie-title">${movie.Title}</span>
+                        <span class="movie-year">${movie.Year}</span>
+                    `;
+
+                    moviesList.appendChild(listItem);
+                });
+
+            search.innerHTML = "";
+            search.appendChild(inputClone);
+            search.appendChild(arrowClone);
+
+            const clonedSearchInput = document.querySelector(".search input");
+
+            clonedSearchInput.setAttribute("placeholder", "Your Favorite Holiday Movie");
+            clonedSearchInput.classList.remove("clicked");
+            
+            clonedSearchInput.addEventListener("click", (event) => {
+                event.stopPropagation();
+
+                dropdownContent.classList.toggle("expand");
+
+                if (dropdownContent.classList.contains("expand")) {
+                    clonedSearchInput.classList.add("clicked");
+                    clonedSearchInput.setAttribute("placeholder", "");
+                }
+                else {
+                    clonedSearchInput.classList.remove("clicked");
+                    clonedSearchInput.setAttribute("placeholder", "Your Favorite Holiday Movie");
+                }
+            });
+
+            if (dropdownContent.classList.contains("expand")) {
+                clonedSearchInput.classList.add("clicked");
+                clonedSearchInput.setAttribute("placeholder", "");
+            }
+
+            searchInput.value = "";
+            clonedSearchInput.value = "";
+        });
+
+        // Search functionality, filtering movies
+        let debounceTimeout;
+
+        searchInput.addEventListener("input", (event) => {
+            clearTimeout(debounceTimeout);
+
+            debounceTimeout = setTimeout(() => {
+                let searchValue = event.target.value.toLowerCase();
+                const moviesList = document.getElementById("movies-list");
+
+                moviesList.innerHTML = "";
+
+                let filteredMovies = moviesData.filter(movie => {
+                    return movie.Title.toLowerCase().includes(searchValue);
+                });
+
+                filteredMovies.forEach(movie => {
+                    const listItem = document.createElement("li");
+                    listItem.classList.add("movie");
+                    listItem.setAttribute("tabindex", "0");
+
+                    listItem.innerHTML = `
+                        <img class="movie-image" src="${movie.Image}" alt="${movie["Image Alt"]}">
+                        <span class="movie-title">${movie.Title}</span>
+                        <span class="movie-year">${movie.Year}</span>
+                    `;
+
+                    moviesList.appendChild(listItem);
+                });
+            }, 300);
+        });
+
+        window.onload = function() {
+            searchInput.value = "";
+        };
+
+    </script>
+</body>
+</html>

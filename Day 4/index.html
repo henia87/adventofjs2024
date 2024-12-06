@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advent of JS 2024 - Challenge #4</title>
+    <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+    <h1><a href="https://store.selfteach.me/view/courses/advent-of-javascript-2024" target="_blank">Advent of JS 2024</a> - Challenge #4</h1>
+    <p>#adventofjs</p>
+    
+    <h2>Resizable panels</h2>
+    <p>Drag the black borders to resize the panels</p>
+    <div class="container">
+        <div class="light-green-box"></div>
+        <div class="horizontal-resizer"></div>
+        <div class="bottom-row">
+            <div class="middle-green-box"></div>
+            <div class="vertical-resizer"></div>
+            <div class="dark-green-box"></div>
+        </div>
+    </div>
+
+    <script>
+        const lightGreenBox = document.querySelector(".light-green-box");
+        const horizontalResizer = document.querySelector(".horizontal-resizer");
+        const bottomRow = document.querySelector(".bottom-row");
+        const middleGreenBox = document.querySelector(".middle-green-box");
+        const darkGreenBox = document.querySelector(".dark-green-box");
+        const verticalResizer = document.querySelector(".vertical-resizer");
+
+        horizontalResizer.addEventListener("mousedown", initResizeHeight, false);
+
+        function initResizeHeight(event) {
+            window.addEventListener("mousemove", resizeHeight, false);
+            window.addEventListener("mouseup", stopResizeHeight, false);
+        }
+
+        function resizeHeight(event) {
+            let newHeight = event.clientY - lightGreenBox.getBoundingClientRect().top;
+            const containerHeight = document.querySelector(".container").clientHeight;
+            if(newHeight > 50 && newHeight < containerHeight - 50) {
+                lightGreenBox.style.height = newHeight + "px";
+                bottomRow.style.height = `${containerHeight - newHeight}px`;
+            }
+        }
+
+        function stopResizeHeight() {
+            window.removeEventListener("mousemove", resizeHeight, false);
+            window.removeEventListener("mouseup", stopResizeHeight, false);
+        }
+
+        verticalResizer.addEventListener("mousedown", initResizeWidth, false);
+
+        function initResizeWidth(even) {
+            window.addEventListener("mousemove", resizeWidth, false);
+            window.addEventListener("mouseup", stopResizeWidth, false);
+        }
+
+        function resizeWidth(event) {
+            let newWidth = event.clientX - middleGreenBox.getBoundingClientRect().left;
+            const containerWidth = document.querySelector(".container").clientWidth;
+            if(newWidth > 50 && newWidth < containerWidth - 50) {
+                middleGreenBox.style.width = newWidth + "px";
+                darkGreenBox.style.width = `${containerWidth - newWidth}px`;
+            }
+        }
+
+        function stopResizeWidth() {
+            window.removeEventListener("mousemove", resizeWidth, false);
+            window.removeEventListener("mouseup", stopResizeWidth, false);
+        }
+    </script>
+</body>
+</html>

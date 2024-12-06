@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advent of JS 2024 - Challenge #5</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            padding: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .wrapper {
+            display: flex;
+            flex-direction: column;
+        }
+
+        #text-to-count {
+            width: 500px;
+            height: 200px;
+            resize: none;
+            background-color: rgb(209, 205, 205);
+            padding: 10px;
+        }
+
+        #count {
+            margin-top: 5px;
+            align-self: flex-end;
+        }
+    </style>
+</head>
+<body>
+    <h1><a href="https://store.selfteach.me/view/courses/advent-of-javascript-2024" target="_blank">Advent of JS 2024</a> - Challenge #5</h1>
+    <p>#adventofjs</p>
+    
+    <h2>Character counter</h2>
+
+    <div class="wrapper">
+        <textarea name="text-to-count" id="text-to-count"></textarea>
+        <span id="count">Count: 0</span>
+    </div>
+
+    <script>
+        let countParagraph = document.querySelector("#count");
+        document.querySelectorAll("#text-to-count").forEach((text) => {
+            text.addEventListener("input", () => {
+                const count = text.value.length;
+                countParagraph.textContent = `Count: ${count}`;
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advent of JS 2024 - Challenge #3</title>
+    <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+    <h1><a href="https://store.selfteach.me/view/courses/advent-of-javascript-2024" target="_blank">Advent of JS 2024</a> - Challenge #3</h1>
+    <p>#adventofjs</p>
+
+    <h2>Auto-resizing textarea</h2>
+
+    <div>
+        <textarea id="auto-resizing-input" placeholder="Type something..."></textarea>
+    </div>
+
+    <script>
+        document.querySelectorAll("textarea").forEach((textarea) => {
+            textarea.style.height = textarea.scrollHeight + "px";
+            textarea.style.overflowY = "hidden";
+
+            textarea.addEventListener("input", () => {
+                textarea.style.height = "auto";
+                textarea.style.height = textarea.scrollHeight + "px";
+            });
+        });
+    </script>    
+</body>
+</html>

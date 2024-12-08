@@ -19,3 +19,5 @@ Challenge #4: Resizable panels layout
 (I used this solution as a basis: https://jsfiddle.net/RainStudios/mw786v1w/)
 
 Challenge #5: Character counter in textarea
+
+Challenge #6: Copy to clipboard button

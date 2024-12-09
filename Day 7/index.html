@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advent of JS 2024 - Challenge #7</title>
+    <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+    <h1><a href="https://store.selfteach.me/view/courses/advent-of-javascript-2024" target="_blank">Advent of JS 2024</a> - Challenge #7</h1>
+    <p>#adventofjs</p>
+    
+    <h2>Slugify the title</h2>
+
+    <div class="wrapper">
+        <label class="text-to-slugify-label" for="text-to-slugify">Title</label>
+        <input type="text" name="text-to-slugify" id="text-to-slugify">
+    </div>
+    <div class="slug-text"></div>
+
+    <script>
+        const textInput = document.getElementById("text-to-slugify");
+        const slugText = document.querySelector(".slug-text");
+
+        let slugifiedText = "";
+
+        textInput.addEventListener("input", () => {
+            if(textInput.value !== "") {
+                slugifiedText = textInput.value.toLowerCase().replace(/\s/g, "-");
+                slugText.innerHTML = `<span>/${slugifiedText}</span>`;
+            }
+            else {
+                slugText.innerHTML = "";
+            }
+        });
+    </script>
+</body>
+</html>

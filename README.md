@@ -21,3 +21,5 @@ Challenge #4: Resizable panels layout
 Challenge #5: Character counter in textarea
 
 Challenge #6: Copy to clipboard button
+
+Challenge #7: Slugify the title (Copilot spoiled the regex for me - I'm also very bad at regex)
